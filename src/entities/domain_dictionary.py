@@ -1,13 +1,12 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-
 DOMAINS = {
-    "wm": os.getenv("WM_DOMAIN"),
+    "wm": os.getenv("WALMART_DOMAIN"),
     "meli": os.getenv("MELI_DOMAIN"),
-    "az": os.getenv("AZ_DOMAIN")
+    "az": os.getenv("AMAZON_DOMAIN")
 }
 
 def get_domains(keywords):
-    return [DOMAINS.get(keyword) for keyword in keywords if keyword in DOMAINS]
+    domains = [DOMAINS.get(keyword) for keyword in keywords if keyword in DOMAINS]
+    return domains

@@ -3,6 +3,8 @@ import requests
 import logging
 import os
 from dotenv import load_dotenv
+import re
+
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -11,9 +13,9 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 DOMAINS = {
-    "wm": os.getenv("WM_DOMAIN"),
+    "wm": os.getenv("WALMART_DOMAIN"),
     "meli": os.getenv("MELI_DOMAIN"),
-    "az": os.getenv("AZ_DOMAIN")
+    "az": os.getenv("AMAZON_DOMAIN")
 }
 
 
@@ -26,7 +28,10 @@ def scrape_website(domain, prompt):
     
     logger.info(f'search url: "{search_url}"')
   
-    response = requests.get(search_url)
+    headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+    response = requests.get(search_url, headers=headers)
 
     soup = BeautifulSoup(response.content, 'html.parser')
     
@@ -36,13 +41,16 @@ def scrape_website(domain, prompt):
         DOMAINS["wm"]: find_all_in_walmart
     }
     
-    return function_map.get(domain, lambda x: [])(soup,prompt)
+    return function_map.get(domain, lambda x: [])(soup,prompt,domain)
 
 
 def get_search_url(domain, prompt):
     if "mercadolibre.com.mx" in domain:
         return construct_meli_search_url(domain, prompt)
+    elif DOMAINS["wm"] in domain:
+        return construct_walmart_search_url(domain,prompt)
     return None
+
 
 def construct_meli_search_url(domain, prompt):
     search_phrase = prompt.replace(" ", "-")
@@ -58,8 +66,7 @@ def construct_walmart_search_url(domain, prompt):
     search_phrase = prompt.replace(" ", "+")
     return f'{domain}/search?q={search_phrase}'
 
-
-def find_all_in_meli(soup,prompt):
+def find_all_in_meli(soup,prompt,domain):
     # Look for specific product divs based on a class unique to Mercado Libre
     product_divs = soup.find_all('div', class_='ui-search-result__wrapper')
     
@@ -75,8 +82,8 @@ def find_all_in_meli(soup,prompt):
         product_link = a_tag.get('href', '')
 
         # Check if the prompt partially matches the product title (case-insensitive)
-        if prompt.lower() not in product_title.lower():
-            continue
+        #if prompt.lower() not in product_title.lower():
+         #   continue
 
         # Extract the price from the span tag
         price_span = div.find('span', class_='andes-money-amount__fraction')
@@ -98,14 +105,47 @@ def find_all_in_meli(soup,prompt):
 
     return results
 
-
-
 def find_all_in_amazon(soup):
     # define  html tags
     products = soup.find_all('div', class_='some-class-specific-to-amazon')
     return products
 
-def find_all_in_walmart(soup):
-    # define  html tags
-    products = soup.find_all('div', class_='some-class-specific-to-walmart')
+def find_all_in_walmart(soup, prompt,domain):
+    # Get all product divs
+    product_divs = soup.find_all('div', class_='mb0 ph1 pa0-xl bb b--near-white w-25')
+
+
+    # List to store product data
+    products = []
+
+    # Iterate through each product div to extract information
+    for div in product_divs:
+        name_tag = div.find('span', class_="normal dark-gray mb0 mt1 lh-title f6 f5-l lh-copy")
+        price_tag = div.find('div', class_="mr1 mr2-xl b black lh-copy f5 f4-l")
+        a_tag = div.find('a', class_="absolute w-100 h-100 z-1 hide-sibling-opacity")
+
+        link = domain + a_tag.get('href', '') if a_tag and 'href' in a_tag.attrs else None
+        name = name_tag.text
+
+            # Extract only the numeric values from the price_tag using regex
+        if price_tag:
+            price_text = price_tag.text
+            # Extract numbers, optional commas, and optional decimal points
+            price_matches = re.search(r"(\d{1,3}(?:,\d{3})*(\.\d{1,2})?)", price_text)
+            if price_matches:
+            # Remove commas and convert to float
+                price_value = float(price_matches.group(1).replace(',', ''))
+            else:
+                price_value = None
+        else:
+            price_value = None
+
+
+        products.append({
+            'name': name,
+            'price': price_value,
+            'link': link,
+            "source": "walmart"
+        })
+
     return products
