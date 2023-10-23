@@ -1,0 +1,11 @@
+### Search Request
+
+@url = http://localhost:5000/search
+
+POST {{url}} HTTP/1.1
+Content-Type: application/json
+
+{
+	"prompt": "celular xiaomi",
+	"domains": ["meli"]
+}
