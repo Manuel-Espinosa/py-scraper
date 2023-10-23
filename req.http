@@ -7,5 +7,5 @@ Content-Type: application/json
 
 {
 	"prompt": "celular xiaomi",
-	"domains": ["meli"]
+	"domains": ["meli", "wm"]
 }
