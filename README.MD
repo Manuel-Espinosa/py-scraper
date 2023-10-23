@@ -20,14 +20,17 @@
 *Here, you can provide instructions on how to install and use your tool. For example:*
 
 1. Clone the repository:
+   
    ```bash
    git clone https://github.com/your-username/py-scraper.git
    cd py-scraper
    ```
 2. Setup Docker Networks
+   
     ```docker network create backend flaskapp```
-    
+
 3. Run the application using Docker Compose
+   
     ```docker-compose up```
 
 _Note: If you're running Docker for the first time, it might take a while as Docker downloads the required images._
@@ -35,6 +38,7 @@ _Note: If you're running Docker for the first time, it might take a while as Doc
 ## Supported E-commerce Platforms
 
 1. Mercado Libre Mexico
+2. Walmart Mexico
    
 ...and more coming soon!
 
