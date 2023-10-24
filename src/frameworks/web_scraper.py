@@ -122,6 +122,7 @@ def find_all_in_walmart(soup, prompt,domain):
     for div in product_divs:
         name_tag = div.find('span', class_="normal dark-gray mb0 mt1 lh-title f6 f5-l lh-copy")
         price_tag = div.find('div', class_="mr1 mr2-xl b black lh-copy f5 f4-l")
+        discounted_tag = div.find('div', class_="mr1 mr2-xl b black green lh-copy f5 f4-l")
         a_tag = div.find('a', class_="absolute w-100 h-100 z-1 hide-sibling-opacity")
 
         link = domain + a_tag.get('href', '') if a_tag and 'href' in a_tag.attrs else None
@@ -134,11 +135,21 @@ def find_all_in_walmart(soup, prompt,domain):
             price_matches = re.search(r"(\d{1,3}(?:,\d{3})*(\.\d{1,2})?)", price_text)
             if price_matches:
             # Remove commas and convert to float
+                
                 price_value = float(price_matches.group(1).replace(',', ''))
             else:
                 price_value = None
-        else:
-            price_value = None
+                
+        if discounted_tag:
+            price_text = discounted_tag.text
+            # Extract numbers, optional commas, and optional decimal points
+            price_matches = re.search(r"(\d{1,3}(?:,\d{3})*(\.\d{1,2})?)", price_text)
+            if price_matches:
+            # Remove commas and convert to float
+                
+                price_value = float(price_matches.group(1).replace(',', ''))
+            else:
+                price_value = None
 
 
         products.append({
