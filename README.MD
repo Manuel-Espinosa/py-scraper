@@ -27,7 +27,9 @@
    ```
 2. Setup Docker Networks
    
-    ```docker network create backend flaskapp```
+    ```docker network create backend```
+
+    ```docker network create flaskapp```
 
 3. Run the application using Docker Compose
    
