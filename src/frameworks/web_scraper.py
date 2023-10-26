@@ -161,7 +161,7 @@ def find_all_in_walmart(soup, prompt,domain):
             'name': name,
             'price': price_value,
             'link': link,
-            'image_url': image_url,
+            'image': image_url,
             "source": "walmart"
         })
 
