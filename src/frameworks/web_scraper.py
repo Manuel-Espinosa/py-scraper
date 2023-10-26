@@ -84,12 +84,14 @@ def find_all_in_meli(soup,prompt,domain):
         # Check if the prompt partially matches the product title (case-insensitive)
         #if prompt.lower() not in product_title.lower():
          #   continue
-
+        # Extract the product image src from the img tag
+        img_tag = div.find('img', class_='ui-search-result-image__element')
+        
+        product_image = img_tag.get('data-src', '')
         # Extract the price from the span tag
         price_span = div.find('span', class_='andes-money-amount__fraction')
         if not price_span:
             continue
-        
         try:
             price = int(price_span.text.replace(',', '').strip())
         except ValueError:
@@ -100,6 +102,7 @@ def find_all_in_meli(soup,prompt,domain):
             "product": product_title,
             "price": price,
             "link": product_link,
+            "image": product_image,
             "source": "meli"
         })
 
