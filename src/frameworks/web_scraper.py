@@ -127,9 +127,11 @@ def find_all_in_walmart(soup, prompt,domain):
         price_tag = div.find('div', class_="mr1 mr2-xl b black lh-copy f5 f4-l")
         discounted_tag = div.find('div', class_="mr1 mr2-xl b black green lh-copy f5 f4-l")
         a_tag = div.find('a', class_="absolute w-100 h-100 z-1 hide-sibling-opacity")
+        image_tag = div.find('img', attrs={'data-testid': 'productTileImage'})
 
         link = domain + a_tag.get('href', '') if a_tag and 'href' in a_tag.attrs else None
-        name = name_tag.text
+        name = name_tag.text        
+        image_url = image_tag.get('src', '') if image_tag else None
 
             # Extract only the numeric values from the price_tag using regex
         if price_tag:
@@ -159,6 +161,7 @@ def find_all_in_walmart(soup, prompt,domain):
             'name': name,
             'price': price_value,
             'link': link,
+            'image_url': image_url,
             "source": "walmart"
         })
 
