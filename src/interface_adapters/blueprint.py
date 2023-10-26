@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from usecases.search_products import search_in_multiple_domains
+from usecases.access_link import navigate
 
 main_blueprint = Blueprint('main', __name__)
 
@@ -15,3 +16,12 @@ def search():
     price_range = data['price_range']
     products = search_in_multiple_domains(prompt, domains_keywords, price_range)
     return jsonify(products)
+
+@main_blueprint.route('/access-link', methods=['GET'])
+def access_link():
+    target_url = request.args.get('url')
+    if not target_url:
+        return jsonify({"error": "URL parameter is missing."}), 400
+    data= navigate(target_url)
+
+    return jsonify({"data":data})
