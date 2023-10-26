@@ -12,5 +12,6 @@ def search():
     data = request.json
     prompt = data['prompt']
     domains_keywords = data['domains']
-    products = search_in_multiple_domains(prompt, domains_keywords)
+    price_range = data['price_range']
+    products = search_in_multiple_domains(prompt, domains_keywords, price_range)
     return jsonify(products)
