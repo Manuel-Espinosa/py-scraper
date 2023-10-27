@@ -1,5 +1,5 @@
 # Py-Scraper
-[![Banner](IMAGE_URL)](https://ibb.co/gFf0XBs)
+[![Banner](IMAGE_URL)](https://i.ibb.co/prMHs9C/py-scraper.png)
 
 ---
 
