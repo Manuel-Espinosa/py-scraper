@@ -2,7 +2,14 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 
-def navigate(url):
+def browser(ecommerce,url):
+    if ecommerce == "meli":
+        return navigate_meli(url)
+    return 
+
+
+
+def navigate_meli(url):
     # Set up Chrome options
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -16,13 +23,14 @@ def navigate(url):
     driver.get(url)
     
     # Implicitly wait (wait for elements to load)
-    driver.implicitly_wait(10)
+    driver.implicitly_wait(5)
 
     fetched_tables = []
 
     try:
         print("Fetching tables directly from the HTML...")
         tables = driver.find_elements_by_xpath('//table[@class="andes-table"]')
+        title = driver.find_elements_by_xpath('//h1[@class="ui-pdp-title"]')
         if tables:
             print(f"Found {len(tables)} tables.")
             for table in tables:
@@ -30,8 +38,15 @@ def navigate(url):
         else:
             print("No tables found.")
         
-        transformed_tables = tables_to_json(fetched_tables)
-        return transformed_tables
+        transformed_tables = meli_tables_to_json(fetched_tables)
+        
+        title_text = title[0].text if title else None
+        data = {
+            'product': title_text,
+            'detail': transformed_tables
+            }
+
+        return data
 
     except Exception as e:
         print(f"Error encountered: {e}")
@@ -40,7 +55,7 @@ def navigate(url):
         # Always close the driver
         driver.quit()
 
-def tables_to_json(tables_html):
+def meli_tables_to_json(tables_html):
     """
     Convert list of tables' outerHTML to a JSON structure.
     """
@@ -80,7 +95,6 @@ def transform_structure(tables):
         for i, header in enumerate(table["headers"]):
             value = table["rows"][i][0] if i < len(table["rows"]) else None
             table_dict[header] = value
-
         result.append({f"table_{index + 1}": table_dict})
 
     return result
