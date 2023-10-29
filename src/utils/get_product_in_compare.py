@@ -24,7 +24,7 @@ def extract_product_from_compare_text(compare, products):
     for product in products:
         if product is None:
             continue  
-        product_name = preprocess_text(product["product"])
+        product_name = preprocess_text(product["title"])
         # product_name = translate_to_spanish(product_name)
         logging.info(f"process product name: {product_name}")
         score = fuzz.token_sort_ratio(product_name, compare)
