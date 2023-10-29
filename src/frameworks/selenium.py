@@ -1,8 +1,10 @@
 from selenium import webdriver
 from utils.get_meli_prices import get_meli_prices
 from utils.get_meli_tables import get_meli_tables
+from utils.walmart_utils import (get_wm_prices, extract_product_specs,handle_verification_challenge)
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
@@ -14,6 +16,8 @@ logging.basicConfig(level=logging.INFO)
 def browser(ecommerce,url):
     if ecommerce == "meli":
         return navigate_meli(url)
+    elif ecommerce == "wm":
+        return navigate_walmart(url)
     return 
 
 def init_chrome():
@@ -52,10 +56,9 @@ def navigate_meli(url):
         transformed_tables = meli_tables_to_json_transformed(fetched_tables)
         
         data = {
-            'product': title.text,
+            'title': title.text,
             'specs': transformed_tables,
-            'original_price': prices["original_price"],
-            'actual_price': prices["actual_price"],
+            'prices': prices,
             'url':url,
             'store':'Mercado Libre'
             }
@@ -80,3 +83,34 @@ def meli_tables_to_json_transformed(tables_html):
 
     logging.info(f"Transformed table data: {result}")
     return result
+
+
+def navigate_walmart(url):
+    try:
+        url_maincontent = url+'#maincontent'
+        driver = init_chrome()
+        driver.get(url_maincontent)
+        
+        # Check if verification challenge is required
+        challenge_required = handle_verification_challenge(driver)
+        logging.info(f"challenge_required: {str(challenge_required)}")
+        
+        if not challenge_required:
+            # Continue with scraping logic
+            title_element = driver.find_element(By.ID, 'main-title')
+            title = title_element.text
+            prices = get_wm_prices(driver)
+            specs = extract_product_specs(driver)
+            product = {
+                'title': title,
+                'prices': prices,
+                'specs': specs,
+                'store': 'Walmart',
+                'url':url
+            }
+            driver.quit()
+            return product 
+
+    except Exception as e:
+        # Log the error message
+        logging.error(f"An error occurred scraping product: {str(e)}")
