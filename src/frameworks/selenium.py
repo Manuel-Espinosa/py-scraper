@@ -53,6 +53,7 @@ def navigate_meli(url):
             'specs': transformed_tables,
             'original_price': prices["original_price"],
             'actual_price': prices["actual_price"],
+            'url':url,
             'store':'Mercado Libre'
             }
         driver.quit()
