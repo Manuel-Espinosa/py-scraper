@@ -1,11 +1,246 @@
 ### Search Request
 
-@url = http://localhost:5000/search
+@url = http://localhost:5000
 
-POST {{url}} HTTP/1.1
+POST {{url}}/search HTTP/1.1
 Content-Type: application/json
 
 {
 	"prompt": "celular xiaomi",
 	"domains": ["meli", "wm"]
+}
+
+### Product Specs Request
+
+POST {{base_url}}/product/specs HTTP/1.1
+Content-Type: application/json
+User-Agent: Insomnia/2023.5.7
+
+{
+    "products": [
+        {
+            "ecommerce": "meli",
+            "url": "https://www.mercadolibre.com.mx/xiaomi-pocophone-poco-m5s-dual-sim-256-gb-azul-8-gb-ram/p/MLM23429853?pdp_filters=category:MLM1055#searchVariation=MLM23429853&position=1&search_layout=stack&type=product&tracking_id=95eafc2c-644f-4775-975d-0b33e9401341"
+        },
+        {
+            "ecommerce": "meli",
+            "url": "https://www.mercadolibre.com.mx/celular-xiaomi-poco-m5-128gb-6ram-50mp-negro/p/MLM23238280?pdp_filters=category:MLM1055#searchVariation=MLM23238280&position=2&search_layout=stack&type=product&tracking_id=95eafc2c-644f-4775-975d-0b33e9401341"
+        },
+        {
+            "ecommerce": "meli",
+            "url": "https://www.mercadolibre.com.mx/xiaomi-redmi-note-12s-dual-sim-256-gb-onyx-black-8-gb-ram/p/MLM23501450?pdp_filters=category:MLM1055#searchVariation=MLM23501450&position=5&search_layout=stack&type=product&tracking_id=8cfedc77-6430-4aa5-8dc7-b6e215512044"
+        }
+    ]
+}
+
+### Product Compare Request
+
+POST {{url}}/products/compare HTTP/1.1
+Content-Type: application/json
+User-Agent: Insomnia/2023.5.7
+
+{
+	"products": [
+		{
+			"actual_price": "2,881",
+			"original_price": "4,881",
+			"product": "Xiaomi Pocophone Poco M5s Dual Sim 256 Gb Azul 8 Gb Ram",
+			"specs": [
+				{
+					"spec_group_1": {
+						"Color": "Azul",
+						"Línea": "Pocophone",
+						"Marca": "Xiaomi",
+						"Modelo": "Poco M5s",
+						"Modelo detallado": "8 GB",
+						"Versiones": "2207117BPG"
+					}
+				},
+				{
+					"spec_group_2": {
+						"Capa original de personalización del sistema operativo": "MIUI 13",
+						"Nombre del sistema operativo": "Android",
+						"Versión original del sistema operativo": "12"
+					}
+				},
+				{
+					"spec_group_3": {
+						"Cantidad de núcleos del procesador": "8",
+						"Modelo de GPU": "Mali-G76 MC4",
+						"Modelo del procesador": "MediaTek Helio G95",
+						"Modelos de CPU": "2x2.05 GHz Cortex-A76, 6x2 GHz Cortex-A55",
+						"Velocidad del GPU": "900 MHz",
+						"Velocidad del procesador": "2.05 GHz"
+					}
+				},
+				{
+					"spec_group_4": {
+						"Año de lanzamiento": "2022",
+						"Mes de lanzamiento": "Septiembre"
+					}
+				},
+				{
+					"spec_group_5": {
+						"Brillo máximo de la pantalla": "1100 cd/m²",
+						"Con pantalla táctil": "Sí",
+						"Frecuencia de actualización de la pantalla": "60 Hz",
+						"Píxeles por pulgada de la pantalla": "409 ppi",
+						"Relación de aspecto de la pantalla": "20:9",
+						"Resolución de la pantalla": "1080 px x 2400 px",
+						"Tamaño de la pantalla": "6.43 \"",
+						"Tecnología de la pantalla": "AMOLED",
+						"Tipo de display": "DotDisplay",
+						"Tipo de resolución de la pantalla ": "Full HD+"
+					}
+				},
+				{
+					"spec_group_6": {
+						"Capacidad de la batería": "5000 mAh",
+						"Con batería removible": "No",
+						"Con carga inalámbrica": "No",
+						"Con carga rápida": "Sí",
+						"Duración de la batería en espera": "30 días",
+						"Tiempo de conversación": "37 h",
+						"Tipo de batería": "Polímero de litio"
+					}
+				},
+				{
+					"spec_group_7": {
+						"Altura x Ancho x Profundidad": "160.46 mm x 74.5 mm x 8.29 mm",
+						"Peso": "178.8 g"
+					}
+				},
+				{
+					"spec_group_8": {
+						"Con acelerómetro": "Sí",
+						"Con barómetro": "No",
+						"Con brújula": "Sí",
+						"Con giroscopio": "Sí",
+						"Con sensor de proximidad": "Sí"
+					}
+				},
+				{
+					"spec_group_9": {
+						"Cantidad de ranuras para tarjeta SIM": "2",
+						"Es Dual SIM": "Sí",
+						"Tamaños de tarjeta SIM compatibles": "Nano-SIM"
+					}
+				},
+				{
+					"spec_group_10": {
+						"Capacidad máxima de la tarjeta de memoria": "1 TB",
+						"Con ranura para tarjeta de memoria": "Sí",
+						"Memoria RAM": "8 GB",
+						"Memoria interna": "256 GB",
+						"Tipos de tarjeta de memoria": "Micro-SD"
+					}
+				},
+				{
+					"spec_group_11": {
+						"Con Bluetooth": "Sí",
+						"Con GPS": "Sí",
+						"Con NFC": "Sí",
+						"Con Wi-Fi": "Sí",
+						"Con conector USB": "Sí",
+						"Con conector jack 3.5 mm": "Sí",
+						"Con radio": "Sí",
+						"Con sintonizador de TV": "No",
+						"Red móvil": "4G/LTE",
+						"Tipo de conector de carga": "USB-C"
+					}
+				},
+				{
+					"spec_group_12": {
+						"Apertura del diafragma de la cámara frontal": "f 2.4",
+						"Apertura del diafragma de la cámara trasera": "f 1.8/f 2.2/f 2.4/f 2.4",
+						"Cantidad de cámaras frontales": "1",
+						"Cantidad de cámaras traseras": "4",
+						"Características principales de las cámaras": "Modo noche, Modo retrato, Bokeh, Modo belleza IA, Cámara lenta",
+						"Con cámara": "Sí",
+						"Con flash en la cámara frontal": "No",
+						"Resolución de la cámara frontal principal": "13 Mpx",
+						"Resolución de la cámara trasera principal": "64 Mpx",
+						"Resolución de las cámaras traseras": "64 Mpx/8 Mpx/2 Mpx/2 Mpx",
+						"Resolución de video de la cámara frontal": "1920 px x 1080 px",
+						"Resolución de video de la cámara trasera": "3840 px x 2160 px"
+					}
+				},
+				{
+					"spec_group_13": {
+						"Con lector de huella digital": "Sí",
+						"Con reconocimiento de iris": "No",
+						"Con reconocimiento facial": "Sí"
+					}
+				},
+				{
+					 "spec_group_14": {
+						 "Clasificación IP": "IP53",
+						 "Con teclado QWERTY físico": "No",
+						 "Es resistente al agua": "Sí",
+						 "Es resistente al polvo": "Sí"
+					 }
+				 },
+				{
+					 "spec_group_15": {
+						 "Resolución de la cámara gran angular": "8 Mpx"
+					 }
+				}
+			],
+			"store": "Mercado Libre"
+		},
+		{
+			"actual_price": "2,099",
+			"original_price": "3,498",
+			"product": "Celular Xiaomi Poco M5 128gb 6ram 50mp Negro",
+			"specs": [
+				{
+					"spec_group_1": {
+						"": null,
+						"Celular Xiaomi Poco M5 128gb 6ram 50mp Negro(Este producto)": "(90)",
+						"Color": "Android",
+						"Con lector de huella digital": null,
+						"Es Dual SIM": "2408 px x 1080 px",
+						"FreeYond M5A Dual SIM 256 GB negro 8 GB RAMVer producto": "Sí",
+						"Memoria RAM": "",
+						"Memoria interna": "Sí",
+						"Motorola Moto G53, 8 Gb, 128 Gb, 6,5\" Ver producto": "Negro",
+						"Nombre del sistema operativo": null,
+						"Opiniones": "128 GB",
+						"Precio": "6 GB",
+						"Resolución de video de la cámara trasera": null,
+						"Versiones": null,
+						"Xiaomi Pocophone Poco M5s Dual SIM 128 GB gris 6 GB RAMVer producto": "2099 pesos$2,099"
+					}
+				}
+			],
+			"store": "Mercado Libre"
+		},
+		{
+			"actual_price": "3,369",
+			"original_price": null,
+			"product": "Xiaomi Redmi Note 12s Dual Sim 256 Gb Onyx Black 8 Gb Ram",
+			"specs": [
+				{
+					"spec_group_1": {
+						"": null,
+						" Moto G53 5G (50 Mpx/2 Mpx) Dual SIM 128 GB ink blue 8 GB RAMVer producto": "Negro",
+						"Cantidad de ranuras para tarjeta SIM": "",
+						"Celular Realme 10 Ram 8gb Rom 256gb 5000 Ham 33w 50p NegroVer producto": "8 GB",
+						"Color": "Nano-SIM",
+						"Es Dual SIM": "8 GB",
+						"Memoria RAM": null,
+						"Memoria interna": null,
+						"Modelo detallado": "256 GB",
+						"Opiniones": "Sí",
+						"Precio": "2",
+						"Tamaños de tarjeta SIM compatibles": null,
+						"Versiones": null,
+						"Xiaomi Pocophone Poco M5s Dual Sim 256 Gb Gris 8 Gb RamVer producto": "3369 pesos$3,369",
+						"Xiaomi Redmi Note 12s Dual Sim 256 Gb Onyx Black 8 Gb Ram(Este producto)": "(2240)"
+					}
+				}
+			],
+			"store": "Mercado Libre"
+		}
+	]
 }
