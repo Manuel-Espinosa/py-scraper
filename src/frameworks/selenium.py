@@ -1,5 +1,6 @@
 from selenium import webdriver
 from utils.get_meli_prices import get_meli_prices
+from utils.get_meli_tables import get_meli_tables
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -36,6 +37,8 @@ def navigate_meli(url):
         fetched_tables = []
         logging.info(f"Fetching tables directly from the HTML...")
         tables = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'andes-table')))
+        if not tables:
+            tables = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'ui-vpp-striped-specs__table')))
         logging.info(f"tables: {tables}")
         title = driver.find_element(By.CLASS_NAME, 'ui-pdp-title')
         prices = get_meli_prices(driver)
