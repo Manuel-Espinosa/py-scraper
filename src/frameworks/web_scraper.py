@@ -4,6 +4,7 @@ import logging
 import os
 from dotenv import load_dotenv
 import re
+from usecases.use_browser import apply_meli_price_filters
 
 
 # Set up logging
@@ -45,17 +46,20 @@ def scrape_website(domain, prompt, price_range):
 
 
 def get_search_url(domain, prompt,price_range):
-    if "mercadolibre.com.mx" in domain:
-        return construct_meli_search_url(domain, prompt)
+    if DOMAINS["meli"] in domain:
+        return construct_meli_search_url(domain, prompt,price_range)
     elif DOMAINS["wm"] in domain:
         return construct_walmart_search_url(domain,prompt,price_range)
     return None
 
 
-def construct_meli_search_url(domain, prompt):
+def construct_meli_search_url(domain, prompt,price_range):
+    #TODO: import and use a selenium function to apply range price filter an return a search url with the filter applied
     search_phrase = prompt.replace(" ", "-")
     encoded_phrase = prompt.replace(" ", "%20")
-    return f'{domain}/{search_phrase}#D[A:{encoded_phrase}]'
+    search_url = f'{domain}/{search_phrase}#D[A:{encoded_phrase}]'
+    search_url_with_filters = apply_meli_price_filters(price_range[0],price_range[1],search_url)
+    return search_url_with_filters
 
 def construct_amazon_search_url(domain, prompt):
     search_phrase = prompt.replace(" ", "+")
