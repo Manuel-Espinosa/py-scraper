@@ -18,13 +18,13 @@ def search_in_multiple_domains(prompt, domains_keywords, price_range):
     all_products = []
     
     for domain in domains:
-        products = scrape_website(domain, prompt)
+        products = scrape_website(domain, prompt,price_range)
         all_products.extend(products)
         
     # Filter products within the given price range
-    filtered_products = filter_products_by_price(all_products, price_range)
+    #filtered_products = filter_products_by_price(all_products, price_range)
     
-    return filtered_products
+    return all_products
 
 def filter_products_by_price(products, price_range):
     """
