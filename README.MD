@@ -1,8 +1,6 @@
 # Py-Scraper
 [![Banner](https://i.ibb.co/prMHs9C/py-scraper.png)](https://i.ibb.co/prMHs9C/py-scraper.png)
 
-[![Banner](IMAGE_URL)](https://ibb.co/gFf0XBs)
-
 ---
 
 ## Overview
