@@ -19,10 +19,10 @@ DOMAINS = {
 }
 
 
-def scrape_website(domain, prompt):
+def scrape_website(domain, prompt, price_range):
     logger.info(f'Domain: "{domain}", prompt="{prompt}"')
 
-    search_url = get_search_url(domain, prompt)
+    search_url = get_search_url(domain, prompt,price_range)
     if not search_url:
         return []
     
@@ -44,11 +44,11 @@ def scrape_website(domain, prompt):
     return function_map.get(domain, lambda x: [])(soup,prompt,domain)
 
 
-def get_search_url(domain, prompt):
+def get_search_url(domain, prompt,price_range):
     if "mercadolibre.com.mx" in domain:
         return construct_meli_search_url(domain, prompt)
     elif DOMAINS["wm"] in domain:
-        return construct_walmart_search_url(domain,prompt)
+        return construct_walmart_search_url(domain,prompt,price_range)
     return None
 
 
@@ -62,9 +62,9 @@ def construct_amazon_search_url(domain, prompt):
     language_parameter = "&__mk_es_MX=%C3%85M%C3%85%C5%BD%C3%95%C3%91"
     return f'{domain}/s?k={search_phrase}{language_parameter}'
 
-def construct_walmart_search_url(domain, prompt):
+def construct_walmart_search_url(domain, prompt, price_range):
     search_phrase = prompt.replace(" ", "+")
-    return f'{domain}/search?q={search_phrase}'
+    return f'{domain}/search?q={search_phrase}&min_price={price_range[0]}&max_price{price_range[1]}'
 
 def find_all_in_meli(soup,prompt,domain):
     # Look for specific product divs based on a class unique to Mercado Libre
