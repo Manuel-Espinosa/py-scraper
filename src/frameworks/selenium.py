@@ -84,6 +84,28 @@ def meli_tables_to_json_transformed(tables_html):
     logging.info(f"Transformed table data: {result}")
     return result
 
+def apply_price_filter_in_meli(min_price, max_price,search_url):
+    driver = init_chrome()
+    wait = WebDriverWait(driver, 5)
+
+    driver.get(search_url)
+    price_filter_section = wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'ui-search-filter-groups')))
+
+    min_price_input = price_filter_section.find_element(By.XPATH, './/input[@data-testid="Minimum-price"]')
+    max_price_input = price_filter_section.find_element(By.XPATH, './/input[@data-testid="Maximum-price"]')
+    apply_button = price_filter_section.find_element(By.XPATH, './/button[@data-testid="submit-price"]')
+    
+    min_price_input.clear()
+    min_price_input.send_keys(str(min_price))
+    max_price_input.clear()
+    max_price_input.send_keys(str(max_price))
+    
+    apply_button.click()
+    
+    wait.until(EC.staleness_of(price_filter_section))
+    
+    return driver.current_url
+
 
 def navigate_walmart(url):
     try:
