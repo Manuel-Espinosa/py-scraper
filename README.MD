@@ -281,3 +281,9 @@ While this is a scholar project, contributions and feedback are welcome! Please 
 ## License
 
 This project is licensed under the MIT License.
+
+## Do you like this project?
+
+Let's drink a coffe together!
+
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="devmanu" data-color="#FFDD00" data-emoji="☕"  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
