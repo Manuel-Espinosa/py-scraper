@@ -9,6 +9,10 @@ main_blueprint = Blueprint('main', __name__)
 def index():
     return "Hello, Web Scraper!"
 
+@main_blueprint.route('/health')
+def health_check():
+    return "OK", 200
+
 @main_blueprint.route('/search', methods=['POST'])
 def search():
     data = request.json
