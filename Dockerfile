@@ -38,4 +38,4 @@ RUN pip install --upgrade Flask Werkzeug
 
 COPY src /app/src
 
-CMD ["python", "/app/src/app.py"]
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "app:app"]
