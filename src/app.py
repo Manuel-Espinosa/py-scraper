@@ -3,7 +3,7 @@ from interface_adapters.blueprint import main_blueprint
 from flask_cors import CORS  # Import CORS
 import os
 
-SCRAPER_PORT = int(os.environ.get("SCRAPER_PORT", 5000))
+SCRAPER_PORT = int(os.environ.get("SCRAPER_PORT", 8080))
 
 app = Flask(__name__)
 CORS(app)
