@@ -16,25 +16,9 @@ services:
       - "${SCRAPER_PORT}:${SCRAPER_PORT}"
     networks:
       - backend
-    depends_on:
-      - mongodb
-
-  mongodb:
-    image: mongo:latest
-    ports:
-      - "${MONGO_PORT}:${MONGO_PORT}"
-    volumes:
-      - mongodb-data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    networks:
-      - backend
 
 networks:
   backend:
     external:
       name: flaskapp
-      
-volumes:
-  mongodb-data:
+
