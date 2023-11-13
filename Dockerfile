@@ -39,4 +39,4 @@ RUN pip install --upgrade Flask Werkzeug
 
 COPY src /app/src
 
-CMD ["gunicorn", "-b", "0.0.0.0:8080", "src.app:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "--timeout", "120", "src.app:app"]
