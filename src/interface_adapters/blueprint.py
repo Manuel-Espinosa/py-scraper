@@ -22,7 +22,7 @@ def search():
     products = search_in_multiple_domains(prompt, domains_keywords, price_range)
     return jsonify(products)
 
-@main_blueprint.route('/product/specs', methods=['GET'])
+@main_blueprint.route('/product/specs', methods=['POST'])
 def access_link():
     payload = request.json
     data=use_browser(payload)
