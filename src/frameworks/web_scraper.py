@@ -72,7 +72,11 @@ def construct_walmart_search_url(domain, prompt, price_range):
 
 def find_all_in_meli(soup,prompt,domain):
     # Look for specific product divs based on a class unique to Mercado Libre
+    logger.info(f'searching products')
+
     product_divs = soup.find_all('div', class_='ui-search-result__wrapper')
+    logger.info(f'product divs: "{product_divs}"')
+
     
     results = []
 
@@ -109,6 +113,9 @@ def find_all_in_meli(soup,prompt,domain):
             "image": product_image,
             "source": "meli"
         })
+        logger.info(f'results: "{results}"')
+
+
 
     return results
 
