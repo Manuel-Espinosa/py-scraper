@@ -75,7 +75,6 @@ def find_all_in_meli(soup,prompt,domain):
     logger.info(f'searching products')
 
     product_divs = soup.find_all('div', class_='ui-search-result__wrapper')
-    logger.info(f'product divs: "{product_divs}"')
 
     
     results = []
@@ -113,7 +112,7 @@ def find_all_in_meli(soup,prompt,domain):
             "image": product_image,
             "source": "meli"
         })
-        logger.info(f'results: "{results}"')
+    logger.info(f'results: scrapping finished')
 
 
 

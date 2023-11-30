@@ -1,5 +1,5 @@
 from selenium import webdriver
-from utils.get_meli_prices import get_meli_prices
+from utils.get_meli_prices import (get_meli_prices, get_meli_prices_from_tracker)
 from utils.get_meli_tables import get_meli_tables
 from utils.walmart_utils import (get_wm_prices, extract_product_specs,handle_verification_challenge)
 from selenium.webdriver.chrome.options import Options
@@ -46,6 +46,14 @@ def navigate_meli(url):
         logging.info(f"tables: {tables}")
         title = driver.find_element(By.CLASS_NAME, 'ui-pdp-title')
         prices = get_meli_prices(driver)
+        # Find the input tag with name="item_id" using Selenium
+        item_id_input = driver.find_element(By.NAME, 'item_id')
+
+        # Extract the value from the input tag
+        item_id_value = item_id_input.get_attribute('value') if item_id_input else ''
+        logging.info(f"item_id_value: {item_id_value}")
+        get_meli_prices_from_tracker(item_id_value)
+
         logging.info(f"prices: {prices}")
         if tables:
             print(f"Found {len(tables)} tables.")

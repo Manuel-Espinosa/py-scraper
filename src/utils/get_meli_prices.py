@@ -1,5 +1,12 @@
+import os
+import requests
+import logging
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+logging.basicConfig(level=logging.INFO)
+
+
+tracker_url = os.getenv("TRACKER_URL")
 
 def get_meli_prices(driver):
     xpaths = {
@@ -23,3 +30,15 @@ def get_meli_prices(driver):
     }
     
     return prices
+
+def get_meli_prices_from_tracker(id):
+    payload = ""
+    headers = {}
+    url = f"{tracker_url}{id}/prices"
+    response = requests.request("GET", url, data=payload, headers=headers)
+    try:
+        response_data = response.json()
+        logging.info(f"prices from tracker: {response_data}")
+    except ValueError:
+        logging.error("Invalid JSON response from tracker")
+    return
