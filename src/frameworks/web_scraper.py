@@ -75,13 +75,12 @@ def find_all_in_meli(soup,prompt,domain):
     logger.info(f'searching products')
 
     product_divs = soup.find_all('div', class_='ui-search-result__wrapper')
-
     
     results = []
 
     for div in product_divs:
         # Extract the product title and href link from the anchor tag
-        a_tag = div.find('a', class_='ui-search-item__group__element ui-search-link')
+        a_tag = div.find('a', class_='ui-search-item__group__element ui-search-link__title-card ui-search-link')
         if not a_tag:
             continue
         
@@ -103,6 +102,13 @@ def find_all_in_meli(soup,prompt,domain):
             price = int(price_span.text.replace(',', '').strip())
         except ValueError:
             continue
+        logging.info('PROD JSON: %s', str({
+            "product": product_title,
+            "price": price,
+            "link": product_link,
+            "image": product_image,
+            "source": "meli"
+        }))
 
         # Append the product details to results
         results.append({
