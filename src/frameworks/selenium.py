@@ -52,7 +52,10 @@ def navigate_meli(url):
         # Extract the value from the input tag
         item_id_value = item_id_input.get_attribute('value') if item_id_input else ''
         logging.info(f"item_id_value: {item_id_value}")
-        get_meli_prices_from_tracker(item_id_value)
+        try:
+            get_meli_prices_from_tracker(item_id_value)
+        except:
+            pass
 
         logging.info(f"prices: {prices}")
         if tables:
