@@ -130,9 +130,10 @@ def find_all_in_amazon(soup):
     return products
 
 def find_all_in_walmart(soup, prompt,domain):
+    logging.info('finding in walmart')
     # Get all product divs
     product_divs = soup.find_all('div', class_='mb0 ph1 pa0-xl bb b--near-white w-25')
-
+    logging.info(f'finding divs walmart %s', product_divs)
 
     # List to store product data
     products = []
@@ -171,7 +172,13 @@ def find_all_in_walmart(soup, prompt,domain):
                 price_value = float(price_matches.group(1).replace(',', ''))
             else:
                 price_value = None
-
+        logging.info(f'product: %s', {
+            'name': name,
+            'price': price_value,
+            'link': link,
+            'image': image_url,
+            "source": "walmart"
+        })
 
         products.append({
             'name': name,
