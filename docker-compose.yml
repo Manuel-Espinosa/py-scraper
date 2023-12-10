@@ -1,6 +1,6 @@
 version: '3.8'
-
 services:
+
   scraper:
     build:
       context: .
@@ -10,8 +10,8 @@ services:
     env_file:
       - .env
     environment:
-      - FLASK_APP=app.py
-      - FLASK_ENV=development 
+      - QUART_APP=app.py
+      - QUART_ENV=development
     ports:
       - "${SCRAPER_PORT}:8080"
     networks:
@@ -21,4 +21,3 @@ networks:
   backend:
     external:
       name: flaskapp
-

@@ -33,10 +33,13 @@ RUN CHROME_INSTALLED_VERSION=$(google-chrome --version | awk '{ print $3 }' | cu
     && apt-get purge --auto-remove -y unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y libxshmfence1
+
 COPY requirements.txt /app/
 RUN pip install --upgrade pip && pip install -r requirements.txt
-RUN pip install --upgrade Flask Werkzeug
+RUN playwright install
 
 COPY src /app/src
 
-CMD ["gunicorn", "-b", "0.0.0.0:8080", "-k", "gevent", "--workers", "4", "src.app:app"]
+CMD ["hypercorn", "-b", "0.0.0.0:8080", "src.app:app"]

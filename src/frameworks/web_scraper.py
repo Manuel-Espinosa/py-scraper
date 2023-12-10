@@ -5,6 +5,9 @@ import os
 from dotenv import load_dotenv
 import re
 from usecases.use_browser import apply_meli_price_filters
+import aiohttp
+
+
 
 
 # Set up logging
@@ -20,116 +23,106 @@ DOMAINS = {
 }
 
 
-def scrape_website(domain, prompt, price_range):
+async def scrape_website(domain, prompt, price_range):
     logger.info(f'Domain: "{domain}", prompt="{prompt}"')
 
-    search_url = get_search_url(domain, prompt,price_range)
+    search_url = await get_search_url(domain, prompt, price_range)
+    logging.info(f"search_url: %s",search_url)
     if not search_url:
         return []
-    
-    logger.info(f'search url: "{search_url}"')
-  
-    headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    }
-    response = requests.get(search_url, headers=headers)
 
-    soup = BeautifulSoup(response.content, 'html.parser')
-    
+    logger.info(f'search url: "{search_url}"')
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+
+    # Use aiohttp to make an asynchronous GET request
+    async with aiohttp.ClientSession() as session:
+        async with session.get(search_url, headers=headers) as response:
+            response_status = response.status
+            content = await response.read()
+
+    logger.info(f'Response Status Code: {response_status}')
+    logger.info(f'Response Content Length: {len(content)}')
+
+    # Parse the content with BeautifulSoup
+    soup = BeautifulSoup(content, 'html.parser')
+
     function_map = {
         DOMAINS["meli"]: find_all_in_meli,
         DOMAINS["az"]: find_all_in_amazon,
         DOMAINS["wm"]: find_all_in_walmart
     }
-    
-    return function_map.get(domain, lambda x: [])(soup,prompt,domain)
+
+    # Extract the appropriate function from the map and then await its call
+    scraping_function = function_map.get(domain, lambda soup, prompt, domain: [])
+    result = await scraping_function(soup, prompt, domain)
+
+    return result
 
 
-def get_search_url(domain, prompt,price_range):
+
+async def get_search_url(domain, prompt,price_range):
     if DOMAINS["meli"] in domain:
-        return construct_meli_search_url(domain, prompt,price_range)
+        return await construct_meli_search_url(domain, prompt,price_range)
     elif DOMAINS["wm"] in domain:
-        return construct_walmart_search_url(domain,prompt,price_range)
+        return await construct_walmart_search_url(domain,prompt,price_range)
     return None
 
 
-def construct_meli_search_url(domain, prompt,price_range):
+async def construct_meli_search_url(domain, prompt,price_range):
     #TODO: import and use a selenium function to apply range price filter an return a search url with the filter applied
     search_phrase = prompt.replace(" ", "-")
     encoded_phrase = prompt.replace(" ", "%20")
     search_url = f'{domain}/{search_phrase}#D[A:{encoded_phrase}]'
-    search_url_with_filters = apply_meli_price_filters(price_range[0],price_range[1],search_url)
+    logging.info(f"search_url in constructor %s: ",search_url)
+    search_url_with_filters = await apply_meli_price_filters(price_range[0],price_range[1],search_url)
     return search_url_with_filters
 
-def construct_amazon_search_url(domain, prompt):
+async def construct_amazon_search_url(domain, prompt):
     search_phrase = prompt.replace(" ", "+")
     language_parameter = "&__mk_es_MX=%C3%85M%C3%85%C5%BD%C3%95%C3%91"
     return f'{domain}/s?k={search_phrase}{language_parameter}'
 
-def construct_walmart_search_url(domain, prompt, price_range):
+async def construct_walmart_search_url(domain, prompt, price_range):
     search_phrase = prompt.replace(" ", "+")
     return f'{domain}/search?q={search_phrase}&min_price={price_range[0]}&max_price{price_range[1]}'
 
-def find_all_in_meli(soup,prompt,domain):
-    # Look for specific product divs based on a class unique to Mercado Libre
-    logger.info(f'searching products')
 
-    product_divs = soup.find_all('div', class_='ui-search-result__wrapper')
+async def find_all_in_meli(soup, prompt,domain):
+    # Find the specific section
+    search_section = soup.select_one('section.ui-search-results.ui-search-results--without-disclaimer')
     
-    results = []
+    if not search_section:
+        return []
 
-    for div in product_divs:
-        # Extract the product title and href link from the anchor tag
-        a_tag = div.find('a', class_='ui-search-item__group__element ui-search-link__title-card ui-search-link')
-        if not a_tag:
-            continue
-        
-        product_title = a_tag.get('title', '').strip()
-        product_link = a_tag.get('href', '')
+    # Find the ordered list within the section
+    ol_tag = search_section.select_one('ol.ui-search-layout.ui-search-layout--stack')
 
-        # Check if the prompt partially matches the product title (case-insensitive)
-        #if prompt.lower() not in product_title.lower():
-         #   continue
-        # Extract the product image src from the img tag
-        img_tag = div.find('img', class_='ui-search-result-image__element')
-        
-        product_image = img_tag.get('data-src', '')
-        # Extract the price from the span tag
-        price_span = div.find('span', class_='andes-money-amount__fraction')
-        if not price_span:
-            continue
-        try:
-            price = int(price_span.text.replace(',', '').strip())
-        except ValueError:
-            continue
-        logging.info('PROD JSON: %s', str({
-            "product": product_title,
-            "price": price,
-            "link": product_link,
-            "image": product_image,
-            "source": "meli"
-        }))
+    if not ol_tag:
+        return []
 
-        # Append the product details to results
-        results.append({
-            "product": product_title,
-            "price": price,
-            "link": product_link,
-            "image": product_image,
-            "source": "meli"
-        })
-    logger.info(f'results: scrapping finished')
+    # Find all list items within the ordered list
+    li_tags = ol_tag.select('li.ui-search-layout__item')
 
 
+    item_ids = []
+    for li in li_tags:
+        # Find the hidden input element for item ID
+        item_id_input = li.select_one('input[type="hidden"][name="itemId"]')
+        if item_id_input:
+            item_id = item_id_input.get('value', '').strip()
+            item_ids.append(item_id)
 
-    return results
+    return item_ids
 
-def find_all_in_amazon(soup):
+async def find_all_in_amazon(soup):
     # define  html tags
     products = soup.find_all('div', class_='some-class-specific-to-amazon')
     return products
 
-def find_all_in_walmart(soup, prompt,domain):
+async def find_all_in_walmart(soup, prompt,domain):
     logging.info('finding in walmart')
     # Get all product divs
     product_divs = soup.find_all('div', class_='mb0 ph1 pa0-xl bb b--near-white w-25')

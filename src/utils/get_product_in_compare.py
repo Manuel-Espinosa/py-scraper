@@ -1,14 +1,8 @@
 from fuzzywuzzy import fuzz
 import logging
 import re
-from googletrans import Translator
 
 logging.basicConfig(level=logging.INFO)
-
-def translate_to_spanish(text):
-    translator = Translator()
-    translation = translator.translate(text, src='en', dest='es')
-    return translation.text
 
 def preprocess_text(text):
     text = re.sub(r'[^a-zA-Z0-9\s]', '', text).lower()

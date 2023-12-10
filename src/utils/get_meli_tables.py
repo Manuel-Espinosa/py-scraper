@@ -1,8 +1,6 @@
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support import expected_conditions as EC
+from playwright.sync_api import Page
 
-def get_meli_tables(driver, wait):
+def get_meli_tables(page: Page):
     classes = {
         "andes": 'andes-table',
         "striped": 'ui-vpp-striped-specs__table'
@@ -11,15 +9,15 @@ def get_meli_tables(driver, wait):
     tables = []
 
     try:
-        andes_tables = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, classes['andes'])))
+        andes_tables = page.query_selector_all(f'.{classes["andes"]}')
         tables.extend(andes_tables)
-    except NoSuchElementException:
+    except Exception:
         pass
 
     try:
-        striped_tables = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, classes['striped'])))
+        striped_tables = page.query_selector_all(f'.{classes["striped"]}')
         tables.extend(striped_tables)
-    except NoSuchElementException:
+    except Exception:
         pass
 
     return tables
